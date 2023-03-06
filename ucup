@@ -1,0 +1,90 @@
+import pygame
+import random
+
+# Инициализируем Pygame
+pygame.init()
+
+# Определяем цвета
+BLACK = (0, 0, 0)
+WHITE = (255, 255, 255)
+GREEN = (0, 255, 0)
+RED = (255, 0, 0)
+
+# Определяем размеры экрана
+SCREEN_WIDTH = 800
+SCREEN_HEIGHT = 600
+
+# Создаем окно
+screen = pygame.display.set_mode([SCREEN_WIDTH, SCREEN_HEIGHT])
+
+# Устанавливаем заголовок окна
+pygame.display.set_caption("Змейка")
+
+# Устанавливаем часы для управления фпс
+clock = pygame.time.Clock()
+
+# Определяем размеры блока
+BLOCK_SIZE = 10
+
+# Определяем шрифты
+font = pygame.font.SysFont(None, 25)
+
+
+# Определяем функцию для вывода сообщения на экран
+def message_to_screen(msg, color):
+    screen_text = font.render(msg, True, color)
+    screen.blit(screen_text, [SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2])
+
+
+# Определяем функцию для отображения змейки
+def draw_snake(snake_list):
+    for block in snake_list:
+        pygame.draw.rect(screen, GREEN, [block[0], block[1], BLOCK_SIZE, BLOCK_SIZE])
+
+
+# Определяем основную функцию
+def game_loop():
+    # Определяем начальное положение змейки
+    lead_x = SCREEN_WIDTH / 2
+    lead_y = SCREEN_HEIGHT / 2
+
+    # Определяем начальное изменение координат
+    lead_x_change = 0
+    lead_y_change = 0
+
+    # Определяем начальную длину змейки
+    snake_list = []
+    snake_length = 1
+
+    # Определяем начальное положение еды
+    food_x = round(random.randrange(0, SCREEN_WIDTH - BLOCK_SIZE) / 10.0) * 10.0
+    food_y = round(random.randrange(0, SCREEN_HEIGHT - BLOCK_SIZE) / 10.0) * 10.0
+
+    # Определяем переменную для выхода из игры
+    game_exit = False
+
+    # Запускаем игровой цикл
+    while not game_exit:
+        # Обрабатываем события
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                game_exit = True
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_LEFT:
+                    lead_x_change = -BLOCK_SIZE
+                    lead_y_change = 0
+                elif event.key == pygame.K_RIGHT:
+                    lead_x_change = BLOCK_SIZE
+                    lead_y_change = 0
+                elif event.key == pygame.K_UP:
+                    lead_y_change = -BLOCK_SIZE
+                    lead_x_change = 0
+                elif event.key == pygame.K_DOWN:
+                    lead_y_change = BLOCK_SIZE
+                    lead_x_change = 0
+
+        # Обновляем положение змейки
+        lead_x += lead_x_change
+        lead_y += lead_y_change
+
+        # Проверяем, не вышла ли
